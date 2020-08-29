@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { compose } from "recompose";
 import { connect } from "react-redux";
-import { ActionCreator } from "../../reducer";
+import { ActionCreator } from "../../reducer/game/game";
 import { gameOver } from "../../const";
 
 import WelcomeWindow from "../../components/welcome-window/welcome-window.jsx";
@@ -141,10 +141,10 @@ const withChangeScreen = (Component) => {
 
 const mapStateToProps = (state) => {
   return {
-    step: state.step,
-    mistakes: state.mistakes,
-    questions: state.questions,
-    isAuthorizationRequired: state.isAuthorizationRequired,
+    step: state.GAME.step,
+    mistakes: state.GAME.mistakes,
+    questions: state.DATA.questions,
+    isAuthorizationRequired: state.USER.isAuthorizationRequired,
   };
 };
 
