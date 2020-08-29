@@ -1,4 +1,6 @@
 import React, { PureComponent, createRef } from "react";
+import { Link } from "react-router-dom";
+import { AppRoute } from "../../const";
 
 export default class AuthorizationScreen extends PureComponent {
   constructor(props) {
@@ -17,7 +19,12 @@ export default class AuthorizationScreen extends PureComponent {
   }
 
   render() {
-    const { time, allTime, mistakes, onResetButtonClick } = this.props;
+    const {
+      location: {
+        state: { time, allTime, mistakes },
+      },
+      onResetButtonClick,
+    } = this.props;
     const elapsedTime = allTime - time;
     const minutes = Math.floor(elapsedTime / 60);
     const seconds = elapsedTime % 60;
@@ -75,9 +82,13 @@ export default class AuthorizationScreen extends PureComponent {
             Войти
           </button>
         </form>
-        <button className="replay" type="button" onClick={onResetButtonClick}>
+        <Link
+          to={AppRoute.main}
+          className="replay"
+          onClick={onResetButtonClick}
+        >
           Сыграть ещё раз
-        </button>
+        </Link>
       </section>
     );
   }
