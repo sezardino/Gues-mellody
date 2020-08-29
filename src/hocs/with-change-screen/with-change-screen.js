@@ -3,6 +3,10 @@ import { compose } from "recompose";
 import { connect } from "react-redux";
 import { ActionCreator } from "../../reducer/game/game";
 import { gameOver } from "../../const";
+import {
+  Operation as UserOperation,
+  AuthorizationStatus,
+} from "../../reducer/user/user";
 
 import WelcomeWindow from "../../components/welcome-window/welcome-window.jsx";
 import GameScreen from "../../components/game-screen/game-screen.jsx";
@@ -45,12 +49,11 @@ const withChangeScreen = (Component) => {
         questions,
         onAnswerClick,
         onWelcomeButtonClick,
-        isAuthorizationRequired,
+        authorizationStatus,
+        login,
       } = this.props;
       const question = questions[step];
-      if (isAuthorizationRequired) {
-        return <AuthorizationScreen />;
-      }
+
       if (step === -1) {
         return (
           <WelcomeWindow
@@ -80,14 +83,26 @@ const withChangeScreen = (Component) => {
       }
 
       if (step >= questions.length) {
-        return (
-          <WinScreen
-            onResetButtonClick={this.resetGame}
-            time={time}
-            allTime={allTime}
-            mistakes={mistakes}
-          />
-        );
+        if (authorizationStatus === AuthorizationStatus.AUTH) {
+          return (
+            <WinScreen
+              onResetButtonClick={this.resetGame}
+              time={time}
+              allTime={allTime}
+              mistakes={mistakes}
+            />
+          );
+        } else if (authorizationStatus === AuthorizationStatus.NO_AUTH) {
+          return (
+            <AuthorizationScreen
+              time={time}
+              allTime={allTime}
+              onSubmit={login}
+              mistakes={mistakes}
+              onResetButtonClick={this.resetGame}
+            />
+          );
+        }
       }
 
       switch (question.type) {
@@ -144,12 +159,16 @@ const mapStateToProps = (state) => {
     step: state.GAME.step,
     mistakes: state.GAME.mistakes,
     questions: state.DATA.questions,
-    isAuthorizationRequired: state.USER.isAuthorizationRequired,
+    authorizationStatus: state.USER.isAuthorizationRequired,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    login(authData) {
+      dispatch(UserOperation.login(authData));
+    },
+
     onWelcomeButtonClick() {
       dispatch(ActionCreator.incrementStep());
     },

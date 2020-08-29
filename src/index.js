@@ -3,7 +3,12 @@ import ReactDOM from "react-dom";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import reducer from "./reducer/reducer.js";
-import { Operation } from "./reducer/data/data";
+import { Operation as DataOperation } from "./reducer/data/data";
+import {
+  Operation as UserOperation,
+  ActionCreator,
+  AuthorizationStatus,
+} from "./reducer/user/user";
 import thunk from "redux-thunk";
 import { compose } from "recompose";
 import { createAPI } from "./api";
@@ -15,7 +20,13 @@ import App from "./components/App/app.jsx";
 const AppWrapped = withChangeScreen(App);
 
 const init = () => {
-  const api = createAPI((...args) => store.dispatch(...args));
+  const onUnauthorized = () => {
+    store.dispatch(
+      ActionCreator.requireAuthorization(AuthorizationStatus.NO_AUTH)
+    );
+  };
+
+  const api = createAPI(onUnauthorized);
   const store = createStore(
     reducer,
     compose(
@@ -25,8 +36,9 @@ const init = () => {
         : (f) => f
     )
   );
+  store.dispatch(UserOperation.checkAuth());
   const loadQuestions = () => {
-    store.dispatch(Operation.loadQuestions());
+    store.dispatch(DataOperation.loadQuestions());
   };
   loadQuestions();
   ReactDOM.render(

@@ -1,53 +1,84 @@
-import React from "react";
+import React, { PureComponent, createRef } from "react";
 
-const AuthorizationScreen = () => {
-  return (
-    <section className="login">
-      <div className="login__logo">
-        <img
-          src="img/melody-logo.png"
-          alt="Угадай мелодию"
-          width={186}
-          height={83}
-        />
-      </div>
-      <h2 className="login__title">Вы настоящий меломан!</h2>
-      <p className="login__total">
-        За&nbsp;3&nbsp;минуты и&nbsp;25&nbsp;секунд вы&nbsp;набрали
-        12&nbsp;баллов (8&nbsp;быстрых), совершив 3&nbsp;ошибки
-      </p>
-      <p className="login__text">
-        Хотите сравнить свой результат с&nbsp;предыдущими попытками?
-        Представтесь!
-      </p>
-      <form className="login__form" action>
-        <p className="login__field">
-          <label className="login__label" htmlFor="name">
-            Логин
-          </label>
-          <input className="login__input" type="text" name="name" id="name" />
-        </p>
-        <p className="login__field">
-          <label className="login__label" htmlFor="password">
-            Пароль
-          </label>
-          <input
-            className="login__input"
-            type="text"
-            name="password"
-            id="password"
+export default class AuthorizationScreen extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.loginRef = createRef();
+    this.passwordRef = createRef();
+  }
+
+  submitHandler() {
+    const { onSubmit } = this.props;
+    const login = this.loginRef.current.value;
+    const password = this.passwordRef.current.value;
+    const userData = { login, password };
+    onSubmit(userData);
+  }
+
+  render() {
+    const { time, allTime, mistakes, onResetButtonClick } = this.props;
+    const elapsedTime = allTime - time;
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = elapsedTime % 60;
+    return (
+      <section className="login">
+        <div className="login__logo">
+          <img
+            src="img/melody-logo.png"
+            alt="Угадай мелодию"
+            width={186}
+            height={83}
           />
-          <span className="login__error">Неверный пароль</span>
+        </div>
+        <h2 className="login__title">Вы настоящий меломан!</h2>
+        <p className="login__total">
+          За {minutes} минуты и {seconds} секунд вы набрали 12 баллов (8
+          быстрых), совершив {mistakes} ошибки
         </p>
-        <button className="login__button button" type="submit">
-          Войти
+        <p className="login__text">
+          Хотите сравнить свой результат с предыдущими попытками? Представтесь!
+        </p>
+        <form
+          className="login__form"
+          onSubmit={(evt) => {
+            evt.preventDefault();
+            this.submitHandler();
+          }}
+        >
+          <p className="login__field">
+            <label className="login__label" htmlFor="name">
+              Логин
+            </label>
+            <input
+              className="login__input"
+              type="text"
+              name="name"
+              id="name"
+              ref={this.loginRef}
+            />
+          </p>
+          <p className="login__field">
+            <label className="login__label" htmlFor="password">
+              Пароль
+            </label>
+            <input
+              className="login__input"
+              type="text"
+              name="password"
+              id="password"
+              ref={this.passwordRef}
+            />
+            <span className="login__error">Неверный пароль</span>
+          </p>
+          <button className="login__button button" type="submit">
+            Войти
+          </button>
+        </form>
+        <button className="replay" type="button" onClick={onResetButtonClick}>
+          Сыграть ещё раз
         </button>
-      </form>
-      <button className="replay" type="button">
-        Сыграть ещё раз
-      </button>
-    </section>
-  );
-};
-
-export default AuthorizationScreen;
+      </section>
+    );
+  }
+}
