@@ -9,6 +9,7 @@ import GenreQuestionScreen from "../../components/genre-question-screen/genre-qu
 import ArtistQuestionScreen from "../../components/artist-question-screen/artist-question-screen.jsx";
 import GameOverScreen from "../../components/game-over-screen/game-over-screen.jsx";
 import WinScreen from "../../components/win-screen/win-screen.jsx";
+import AuthorizationScreen from "../../components/authorization-screen/authorization-screen.jsx";
 
 import withActivePlayer from "../with-active-player/with-active-player";
 import withAnswers from "../with-answers/with-answers";
@@ -40,8 +41,12 @@ const withChangeScreen = (Component) => {
         onAnswerClick,
         onWelcomeButtonClick,
         timerLaunch,
+        isAuthorizationRequired,
       } = this.props;
       const question = questions[step];
+      if (isAuthorizationRequired) {
+        return <AuthorizationScreen />;
+      }
       if (step === -1) {
         return (
           <WelcomeWindow
@@ -120,6 +125,7 @@ const mapStateToProps = (state) => {
     allTime: state.allTime,
     time: state.time,
     questions: state.questions,
+    isAuthorizationRequired: state.isAuthorizationRequired,
   };
 };
 
