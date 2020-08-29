@@ -4,7 +4,7 @@ const AuthorizationStatus = {
 };
 
 const initState = {
-  isAuthorizationRequired: AuthorizationStatus.AUTH,
+  isAuthorizationRequired: AuthorizationStatus.NO_AUTH,
 };
 
 const ActionType = {
@@ -32,11 +32,6 @@ const reducer = (state = initState, action) => {
 };
 
 const Operation = {
-  checkAuth: (dispatch, getState, api) => {
-    return api.get(`/login`).then(() => {
-      dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));
-    });
-  },
   checkAuth: () => (dispatch, getState, api) => {
     return api
       .get(`/login`)
@@ -48,10 +43,11 @@ const Operation = {
       });
   },
   login: (authData) => (dispatch, getState, api) => {
+    console.log(authData);
     return api
       .post(`/login`, {
-        login: authData.login,
-        password: authData.payload,
+        email: authData.login,
+        password: authData.password,
       })
       .then(() => {
         dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));

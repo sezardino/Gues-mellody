@@ -15,6 +15,7 @@ export default class AuthorizationScreen extends PureComponent {
     const login = this.loginRef.current.value;
     const password = this.passwordRef.current.value;
     const userData = { login, password };
+    console.log(userData);
     onSubmit(userData);
   }
 

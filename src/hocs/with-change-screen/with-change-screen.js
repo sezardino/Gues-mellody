@@ -86,6 +86,14 @@ const withChangeScreen = (Component) => {
           />
         );
       }
+      return (
+        <Redirect
+          to={{
+            pathname: AppRoute.win,
+            state: { time, allTime, mistakes, step },
+          }}
+        />
+      );
 
       if (step >= questions.length) {
         if (authorizationStatus === AuthorizationStatus.AUTH) {
