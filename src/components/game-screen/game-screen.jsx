@@ -1,7 +1,4 @@
 import React, { PureComponent } from "react";
-import { Link } from "react-router-dom";
-import { AppRoute } from "../../const";
-
 import Mistakes from "../mistakes/mistakes.jsx";
 import Timer from "../timer/timer.jsx";
 
@@ -13,18 +10,14 @@ export default class GameScreen extends PureComponent {
     return (
       <section className={`game game--${this.props.type}`}>
         <header className="game__header">
-          <Link
-            className="game__back"
-            to={AppRoute.main}
-            onClick={this.props.onGoBackClick}
-          >
+          <a className="game__back" href="#">
             <span className="visually-hidden">Сыграть ещё раз</span>
             <img
               className="game__logo"
               src="img/melody-logo-ginger.png"
               alt="Угадай мелодию"
             />
-          </Link>
+          </a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="timer"

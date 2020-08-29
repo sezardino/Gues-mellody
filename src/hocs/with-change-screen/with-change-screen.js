@@ -1,9 +1,8 @@
 import React, { PureComponent } from "react";
 import { compose } from "recompose";
 import { connect } from "react-redux";
-import { Switch, Route, Redirect } from "react-router-dom";
 import { ActionCreator } from "../../reducer/game/game";
-import { gameOver, AppRoute } from "../../const";
+import { gameOver } from "../../const";
 import {
   Operation as UserOperation,
   AuthorizationStatus,
@@ -16,7 +15,6 @@ import ArtistQuestionScreen from "../../components/artist-question-screen/artist
 import GameOverScreen from "../../components/game-over-screen/game-over-screen.jsx";
 import WinScreen from "../../components/win-screen/win-screen.jsx";
 import AuthorizationScreen from "../../components/authorization-screen/authorization-screen.jsx";
-import PrivateRoute from "../../components/private-route/private-route.jsx";
 
 import withActivePlayer from "../with-active-player/with-active-player";
 import withAnswers from "../with-answers/with-answers";
@@ -52,6 +50,7 @@ const withChangeScreen = (Component) => {
         onAnswerClick,
         onWelcomeButtonClick,
         authorizationStatus,
+        login,
       } = this.props;
       const question = questions[step];
 
@@ -67,22 +66,18 @@ const withChangeScreen = (Component) => {
 
       if (mistakes >= maxMistakes) {
         return (
-          <Redirect
-            to={{
-              pathname: AppRoute.lose,
-              state: gameOver.triesEnd,
-            }}
+          <GameOverScreen
+            description={gameOver.tryesEnd}
+            onResetButtonClick={this.resetGame}
           />
         );
       }
 
       if (this.state.timeEnd) {
         return (
-          <Redirect
-            to={{
-              pathname: AppRoute.lose,
-              state: gameOver.timeEnd,
-            }}
+          <GameOverScreen
+            description={gameOver.timeEnd}
+            onResetButtonClick={this.resetGame}
           />
         );
       }
@@ -90,20 +85,21 @@ const withChangeScreen = (Component) => {
       if (step >= questions.length) {
         if (authorizationStatus === AuthorizationStatus.AUTH) {
           return (
-            <Redirect
-              to={{
-                pathname: AppRoute.win,
-                state: { time, allTime, mistakes, step },
-              }}
+            <WinScreen
+              onResetButtonClick={this.resetGame}
+              time={time}
+              allTime={allTime}
+              mistakes={mistakes}
             />
           );
         } else if (authorizationStatus === AuthorizationStatus.NO_AUTH) {
           return (
-            <Redirect
-              to={{
-                pathname: AppRoute.auth,
-                state: { time, mistakes },
-              }}
+            <AuthorizationScreen
+              time={time}
+              allTime={allTime}
+              onSubmit={login}
+              mistakes={mistakes}
+              onResetButtonClick={this.resetGame}
             />
           );
         }
@@ -116,7 +112,6 @@ const withChangeScreen = (Component) => {
               time={time}
               mistakes={mistakes}
               onTimeEnd={this.timeEnd}
-              onGoBackClick={this.resetGame}
             >
               <GenreQuestionScreenWrapper
                 question={question}
@@ -130,7 +125,6 @@ const withChangeScreen = (Component) => {
               time={time}
               mistakes={mistakes}
               onTimeEnd={this.timeEnd}
-              onGoBackClick={this.resetGame}
             >
               <ArtistQuestionScreenWrapped
                 question={question}
@@ -152,47 +146,11 @@ const withChangeScreen = (Component) => {
     timeEnd() {
       this.setState({ timeEnd: true });
     }
+
     render() {
-      return (
-        <Switch>
-          <Route
-            path={AppRoute.main}
-            exact
-            render={() => (
-              <Component {...this.props} renderScreen={this.getScreen} />
-            )}
-          />
-
-          <Route
-            path={AppRoute.auth}
-            render={(props) => (
-              <AuthorizationScreen
-                {...props}
-                onSubmit={this.props.login}
-                onResetButtonClick={this.resetGame}
-              />
-            )}
-          />
-
-          <Route
-            path={AppRoute.lose}
-            render={(props) => (
-              <GameOverScreen {...props} onResetButtonClick={this.resetGame} />
-            )}
-          />
-
-          <PrivateRoute
-            exact
-            path={AppRoute.win}
-            render={(props) => (
-              <WinScreen {...props} onResetButtonClick={this.resetGame} />
-            )}
-          />
-        </Switch>
-      );
+      return <Component {...this.props} renderScreen={this.getScreen} />;
     }
   }
-
   return WithChangeScreen;
 };
 

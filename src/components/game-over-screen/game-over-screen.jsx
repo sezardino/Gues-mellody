@@ -1,13 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { AppRoute } from "../../const";
 
 const GameOverScreen = (props) => {
   const {
     onResetButtonClick,
-    location: {
-      state: { total, title },
-    },
+    description: { title, total },
   } = props;
 
   return (
@@ -22,14 +18,9 @@ const GameOverScreen = (props) => {
       </div>
       <h2 className="result__title">{title}</h2>
       <p className="result__total result__total--fail">{total}</p>
-      <Link
-        to={AppRoute.main}
-        className="replay"
-        type="button"
-        onClick={onResetButtonClick}
-      >
+      <button className="replay" type="button" onClick={onResetButtonClick}>
         Попробовать ещё раз
-      </Link>
+      </button>
     </section>
   );
 };

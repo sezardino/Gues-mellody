@@ -3,13 +3,6 @@ const GameType = {
   GENRE: "genre",
 };
 
-const AppRoute = {
-  main: `/`,
-  lose: `/lose`,
-  win: `/win`,
-  auth: "/auth",
-};
-
 const gameSettings = {
   errorCount: 3,
   time: 0.1,
@@ -20,10 +13,10 @@ const gameOver = {
     title: `Увы и ах!`,
     total: `Время вышло! Вы не успели отгадать все мелодии`,
   },
-  triesEnd: {
+  tryesEnd: {
     title: `Какая жалость!`,
     total: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`,
   },
 };
 
-export { GameType, gameOver, gameSettings, AppRoute };
+export { GameType, gameOver, gameSettings };

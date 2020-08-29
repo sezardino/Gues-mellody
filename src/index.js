@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import reducer from "./reducer/reducer.js";
@@ -45,13 +44,11 @@ const init = () => {
   ReactDOM.render(
     <Provider store={store}>
       {/* <App /> */}
-      <BrowserRouter>
-        <AppWrapped
-          maxMistakes={gameSettings.errorCount}
-          time={gameSettings.time}
-          resetData={loadQuestions}
-        />
-      </BrowserRouter>
+      <AppWrapped
+        maxMistakes={gameSettings.errorCount}
+        time={gameSettings.time}
+        resetData={loadQuestions}
+      />
     </Provider>,
     document.getElementById("root")
   );
