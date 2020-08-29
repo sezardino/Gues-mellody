@@ -1,3 +1,5 @@
+import { GameType } from "../../const";
+
 const initState = {
   step: -1,
   mistakes: 0,
@@ -66,6 +68,8 @@ const reducer = (state = initState, action) => {
         ...state,
         mistakes: state.mistakes + action.payload,
       };
+    case ActionType.RESET:
+      return initState;
   }
 
   return state;
