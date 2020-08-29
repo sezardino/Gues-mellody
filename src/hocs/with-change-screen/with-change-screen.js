@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "recompose";
 import { connect } from "react-redux";
 import { ActionCreator } from "../../reducer";
+import { gameOver } from "../../const";
 
 import WelcomeWindow from "../../components/welcome-window/welcome-window.jsx";
 import GameScreen from "../../components/game-screen/game-screen.jsx";
@@ -26,8 +27,12 @@ const withChangeScreen = (Component) => {
   class WithChangeScreen extends PureComponent {
     constructor(props) {
       super(props);
+      this.state = {
+        timeEnd: false,
+      };
       this.getScreen = this.getScreen.bind(this);
       this.resetGame = this.resetGame.bind(this);
+      this.timeEnd = this.timeEnd.bind(this);
     }
 
     getScreen() {
@@ -40,7 +45,6 @@ const withChangeScreen = (Component) => {
         questions,
         onAnswerClick,
         onWelcomeButtonClick,
-        timerLaunch,
         isAuthorizationRequired,
       } = this.props;
       const question = questions[step];
@@ -50,7 +54,7 @@ const withChangeScreen = (Component) => {
       if (step === -1) {
         return (
           <WelcomeWindow
-            lives={mistakes}
+            lives={maxMistakes}
             time={time}
             onWelcomeButtonClick={onWelcomeButtonClick}
           />
@@ -58,7 +62,21 @@ const withChangeScreen = (Component) => {
       }
 
       if (mistakes >= maxMistakes) {
-        return <GameOverScreen onResetButtonClick={this.resetGame} />;
+        return (
+          <GameOverScreen
+            description={gameOver.tryesEnd}
+            onResetButtonClick={this.resetGame}
+          />
+        );
+      }
+
+      if (this.state.timeEnd) {
+        return (
+          <GameOverScreen
+            description={gameOver.timeEnd}
+            onResetButtonClick={this.resetGame}
+          />
+        );
       }
 
       if (step >= questions.length) {
@@ -77,9 +95,8 @@ const withChangeScreen = (Component) => {
           return (
             <GameScreen
               time={time}
-              onTimerStart={timerLaunch}
               mistakes={mistakes}
-              onTimeEnd={this.resetGame}
+              onTimeEnd={this.timeEnd}
             >
               <GenreQuestionScreenWrapper
                 question={question}
@@ -91,9 +108,8 @@ const withChangeScreen = (Component) => {
           return (
             <GameScreen
               time={time}
-              onTimerStart={timerLaunch}
               mistakes={mistakes}
-              onTimeEnd={this.resetGame}
+              onTimeEnd={this.timeEnd}
             >
               <ArtistQuestionScreenWrapped
                 question={question}
@@ -106,8 +122,14 @@ const withChangeScreen = (Component) => {
     }
 
     resetGame() {
-      this.props.resetData();
-      this.props.reset();
+      const { resetData, reset } = this.props;
+      this.setState({ timeEnd: false });
+      resetData();
+      reset();
+    }
+
+    timeEnd() {
+      this.setState({ timeEnd: true });
     }
 
     render() {
@@ -121,9 +143,6 @@ const mapStateToProps = (state) => {
   return {
     step: state.step,
     mistakes: state.mistakes,
-    maxMistakes: state.maxMistakes,
-    allTime: state.allTime,
-    time: state.time,
     questions: state.questions,
     isAuthorizationRequired: state.isAuthorizationRequired,
   };
@@ -133,10 +152,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onWelcomeButtonClick() {
       dispatch(ActionCreator.incrementStep());
-    },
-
-    timerLaunch() {
-      dispatch(ActionCreator.incrementTime());
     },
 
     onAnswerClick(question, answer) {

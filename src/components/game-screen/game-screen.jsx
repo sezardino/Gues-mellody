@@ -2,6 +2,9 @@ import React, { PureComponent } from "react";
 import Mistakes from "../mistakes/mistakes.jsx";
 import Timer from "../timer/timer.jsx";
 
+import withTimer from "../../hocs/with-timer/with-timer";
+
+const TimerWrapped = withTimer(Timer);
 export default class GameScreen extends PureComponent {
   render() {
     return (
@@ -32,10 +35,9 @@ export default class GameScreen extends PureComponent {
               }}
             />
           </svg>
-          <Timer
+          <TimerWrapped
             time={this.props.time}
             onTimeEnd={this.props.onTimeEnd}
-            onTimerStart={this.props.onTimerStart}
           />
           <Mistakes mistakes={this.props.mistakes} />
         </header>

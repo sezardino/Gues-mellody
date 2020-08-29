@@ -1,7 +1,10 @@
 import React from "react";
 
 const GameOverScreen = (props) => {
-  const { onResetButtonClick } = props;
+  const {
+    onResetButtonClick,
+    description: { title, total },
+  } = props;
 
   return (
     <section className="result">
@@ -13,10 +16,8 @@ const GameOverScreen = (props) => {
           height={83}
         />
       </div>
-      <h2 className="result__title">Увы и ах!</h2>
-      <p className="result__total result__total--fail">
-        Время вышло! Вы не успели отгадать все мелодии
-      </p>
+      <h2 className="result__title">{title}</h2>
+      <p className="result__total result__total--fail">{total}</p>
       <button className="replay" type="button" onClick={onResetButtonClick}>
         Попробовать ещё раз
       </button>

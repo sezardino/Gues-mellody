@@ -6,6 +6,7 @@ import { reducer, Operation } from "./reducer.js";
 import thunk from "redux-thunk";
 import { compose } from "recompose";
 import { createAPI } from "./api";
+import { gameSettings } from "./const";
 import withChangeScreen from "./hocs/with-change-screen/with-change-screen";
 
 import App from "./components/App/app.jsx";
@@ -30,7 +31,11 @@ const init = () => {
   ReactDOM.render(
     <Provider store={store}>
       {/* <App /> */}
-      <AppWrapped resetData={loadQuestions} />
+      <AppWrapped
+        maxMistakes={gameSettings.errorCount}
+        time={gameSettings.time}
+        resetData={loadQuestions}
+      />
     </Provider>,
     document.getElementById("root")
   );

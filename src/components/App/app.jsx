@@ -4,7 +4,7 @@ class App extends Component {
   render() {
     const { renderScreen } = this.props;
 
-    return <>{renderScreen()}</>;
+    return renderScreen();
   }
 }
 

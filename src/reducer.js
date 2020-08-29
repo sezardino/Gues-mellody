@@ -1,12 +1,8 @@
 import { GameType } from "./const";
-// import { questions } from "./mock/data";
 
 const initState = {
   step: -1,
   mistakes: 0,
-  maxMistakes: 3,
-  allTime: 300,
-  time: 10,
   questions: [],
   isAuthorizationRequired: false,
 };
@@ -24,7 +20,6 @@ const artistAnswerCheck = (question, answer) => {
 const ActionType = {
   INCREMENT_MISTAKES: `INCREMENT_MISTAKES`,
   INCREMENT_STEP: `INCREMENT_STEP`,
-  INCREMENT_TIME: `INCREMENT_TIME`,
   RESET: `RESET`,
   LOAD_QUESTIONS: `LOAD_QUESTIONS`,
   REQUIRE_AUTHORIZATION: `REQUIRE_AUTHORIZATION`,
@@ -33,11 +28,6 @@ const ActionType = {
 const ActionCreator = {
   incrementStep: () => ({
     type: ActionType.INCREMENT_STEP,
-    payload: 1,
-  }),
-
-  incrementTime: () => ({
-    type: ActionType.INCREMENT_TIME,
     payload: 1,
   }),
 
@@ -86,9 +76,6 @@ const Operation = {
       dispatch(ActionCreator.loadQuestions(response.data));
     });
   },
-  // authorization: () => (dispatch, _getState, api) => {
-  //   return api.post(`/login`)
-  // }
 };
 
 const reducer = (state = initState, action) => {
@@ -102,11 +89,6 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         mistakes: state.mistakes + action.payload,
-      };
-    case ActionType.INCREMENT_TIME:
-      return {
-        ...state,
-        time: state.time - action.payload,
       };
     case ActionType.RESET:
       return initState;
