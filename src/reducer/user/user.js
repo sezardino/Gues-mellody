@@ -32,11 +32,11 @@ const reducer = (state = initState, action) => {
 };
 
 const Operation = {
-  // checkAuth: (dispatch, getState, api) => {
-  //   return api.get(`/login`).then(() => {
-  //     dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));
-  //   });
-  // },
+  checkAuth: (dispatch, getState, api) => {
+    return api.get(`/login`).then(() => {
+      dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));
+    });
+  },
   checkAuth: () => (dispatch, getState, api) => {
     return api
       .get(`/login`)
